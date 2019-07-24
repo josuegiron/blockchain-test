@@ -6,17 +6,24 @@ import (
 
 // Message doc ...
 type Message struct{
-	ID int `josn:"id"`
-	Author string	`json:"content"`
+	Author string	`json:"author"`
 	Content string 	`json:"content"`
-	Timestap time.Time `json:"timestap"`
+	Timestap string `json:"timestap"`
 }
 
-func newMessage(id int, author string, content string) Message {
+func newMessage(author string, content string) Message {
 	return Message{
-		ID: id, 
 		Author: author, 
 		Content: content, 
-		Timestap: time.Now(), 
+		Timestap: time.Now().Format(time.RFC3339), 
 	}
+}
+
+// Queue doc ...
+type Queue struct {
+	Messages []Message `json:"messages"`
+}
+
+func (queue *Queue)clean() {
+	queue.Messages = nil
 }
