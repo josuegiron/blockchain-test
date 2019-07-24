@@ -9,7 +9,7 @@ import (
 var chain []Block
 
 const (
-	difficulty = 1
+	difficulty = 2
 ) 
 
 func createGenesisBlock(){
@@ -29,15 +29,25 @@ func getDifficulty() (string) {
 	return str
 }
 
-func proofOfWorck(block Block) string {
-	
+func proofOfWorck(block *Block) string {
 	block.Nonce = 0
 	computedHash := block.generateHash()
 	for !strings.HasPrefix(computedHash, getDifficulty()) {
 		block.Nonce++
 		computedHash = block.generateHash()
-		log.Println(computedHash)
 	}
 
 	return computedHash
+}
+
+func addBlock(block *Block) bool {
+	previus :=  chain[block.Index-1].generateHash()
+
+	if block.Previus != previus {
+		return false
+	}
+	
+	log.Println(proofOfWorck(block))
+
+	return true
 }

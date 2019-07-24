@@ -17,6 +17,7 @@ type Block struct{
 
 func newBlock(index int, previus string, transactions []interface{}, nonce int) Block{
 	newBlock := Block{
+		Index: index,
 		Previus: previus,
 		Transactions: transactions,
 		Nonce: nonce, 
