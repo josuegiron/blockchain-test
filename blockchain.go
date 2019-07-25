@@ -14,9 +14,15 @@ const (
 	difficulty = 2
 ) 
 
+func newBlockChain() BlockChain {
+	newBlockChain := BlockChain{}
+	newBlockChain.createGenesisBlock()
+	return newBlockChain
+}
+
 func (blockChain *BlockChain)createGenesisBlock(){
 	
-	genessisBlock := newBlock(0, "0", nil, 0)
+	genessisBlock := newBlock(0, "genesis", nil, 0)
 
 	blockChain.Chain = append(blockChain.Chain, genessisBlock) 
 	

@@ -9,10 +9,12 @@ import (
 
 var blockChain BlockChain
 var queue Queue
+var net Net
 
 func main() {
 
-	blockChain.createGenesisBlock()
+	blockChain = newBlockChain()
+	net = newNet()
 
 	router := mux.NewRouter()
 
@@ -20,6 +22,8 @@ func main() {
 	router.HandleFunc("/v1.0/chain", getChainHandle).Methods(http.MethodGet)
 	router.HandleFunc("/v1.0/mine", mineBlockHandle).Methods(http.MethodPost)
 	router.HandleFunc("/v1.0/pending", getPendingHandle).Methods(http.MethodGet)
+
+	router.HandleFunc("/v1.0/net/nodes", addNodeHandle).Methods(http.MethodPost)
 
 	port := ":9090"
 

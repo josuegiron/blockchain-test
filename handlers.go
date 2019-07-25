@@ -80,3 +80,28 @@ func getPendingHandle(w http.ResponseWriter, r *http.Request) {
 	w.Write(response)
 	return
 }
+
+func addNodeHandle(w http.ResponseWriter, r *http.Request) {
+	newNet := Net{}
+
+	decoder := json.NewDecoder(r.Body)
+
+	err := decoder.Decode(&newNet)
+	if err != nil {
+		log.Error(err)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	if newNet.Nodes == nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	net.addNodes(newNet.Nodes)
+
+	log.Info(net.Nodes)
+
+	w.WriteHeader(http.StatusOK)
+	return
+}
