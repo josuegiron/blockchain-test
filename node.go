@@ -1,10 +1,9 @@
 package main
 
 import (
+	"log"
 	osnet "net"
 	"os"
-
-	"go.mnc.gt/log"
 )
 
 // Node doc ...
@@ -53,7 +52,7 @@ func newNet() Net {
 	newNet := Net{}
 	err := newNet.addMe()
 	if err != nil {
-		log.Error(err)
+		log.Println(err)
 		return Net{}
 	}
 	return newNet

@@ -3,8 +3,9 @@ package main
 import (
 	"net/http"
 
+	"log"
+
 	"github.com/gorilla/mux"
-	"go.mnc.gt/log"
 )
 
 var blockChain BlockChain
@@ -29,11 +30,11 @@ func main() {
 
 	port = ":9090"
 
-	log.Infof("Server run in port %v ...", port)
+	log.Println("Server run in port %v ...", port)
 
 	err := http.ListenAndServe(port, router)
 	if err != nil {
-		log.Error(err)
+		log.Println(err)
 		return
 	}
 

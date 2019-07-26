@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"time"
 
-	"go.mnc.gt/log"
+	"log"
 )
 
 func pushMessageHandle(w http.ResponseWriter, r *http.Request) {
@@ -16,13 +16,13 @@ func pushMessageHandle(w http.ResponseWriter, r *http.Request) {
 	decoder := json.NewDecoder(r.Body)
 	err := decoder.Decode(&message)
 	if err != nil {
-		log.Error(err)
+		log.Println(err)
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
 	if message.Content == "" {
-		log.Error("No push mesage...")
+		log.Println("No push mesage...")
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -31,7 +31,7 @@ func pushMessageHandle(w http.ResponseWriter, r *http.Request) {
 
 	queue.Messages = append(queue.Messages, message)
 
-	log.Infof("Add new message '%v' to queue.", message.Content)
+	log.Println("Add new message '%v' to queue.", message.Content)
 
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Server", "Success message")
@@ -39,10 +39,10 @@ func pushMessageHandle(w http.ResponseWriter, r *http.Request) {
 }
 
 func getChainHandle(w http.ResponseWriter, r *http.Request) {
-	log.Info("Return chain...")
+	log.Println("Return chain...")
 	response, err := json.Marshal(blockChain)
 	if err != nil {
-		log.Error(err)
+		log.Println(err)
 		return
 	}
 
@@ -70,7 +70,7 @@ func mineBlockHandle(w http.ResponseWriter, r *http.Request) {
 func getPendingHandle(w http.ResponseWriter, r *http.Request) {
 	response, err := json.Marshal(queue)
 	if err != nil {
-		log.Error(err)
+		log.Println(err)
 		w.WriteHeader(http.StatusForbidden)
 		return
 	}
@@ -88,7 +88,7 @@ func addNodeHandle(w http.ResponseWriter, r *http.Request) {
 
 	err := decoder.Decode(&newNet)
 	if err != nil {
-		log.Error(err)
+		log.Println(err)
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -100,7 +100,7 @@ func addNodeHandle(w http.ResponseWriter, r *http.Request) {
 
 	net.addNodes(newNet.Nodes)
 
-	log.Info(net.Nodes)
+	log.Println(net.Nodes)
 
 	w.WriteHeader(http.StatusOK)
 	return
@@ -118,7 +118,7 @@ func addNewBlock(w http.ResponseWriter, r *http.Request) {
 	decoder := json.NewDecoder(r.Body)
 	err := decoder.Decode(&newBlock)
 	if err != nil {
-		log.Error(err)
+		log.Println(err)
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -129,7 +129,7 @@ func addNewBlock(w http.ResponseWriter, r *http.Request) {
 	newBlock.Transactions = queue.Messages
 
 	if !blockChain.validateBlock(newBlock) {
-		log.Error("Bloque inválido")
+		log.Println("Bloque inválido")
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
