@@ -10,6 +10,7 @@ import (
 var blockChain BlockChain
 var queue Queue
 var net Net
+var port string
 
 func main() {
 
@@ -20,12 +21,13 @@ func main() {
 
 	router.HandleFunc("/v1.0/messages", pushMessageHandle).Methods(http.MethodPost)
 	router.HandleFunc("/v1.0/chain", getChainHandle).Methods(http.MethodGet)
+	router.HandleFunc("/v1.0/chain/block", addNewBlock).Methods(http.MethodPost)
 	router.HandleFunc("/v1.0/mine", mineBlockHandle).Methods(http.MethodPost)
 	router.HandleFunc("/v1.0/pending", getPendingHandle).Methods(http.MethodGet)
 
 	router.HandleFunc("/v1.0/net/nodes", addNodeHandle).Methods(http.MethodPost)
 
-	port := ":9090"
+	port = ":9090"
 
 	log.Infof("Server run in port %v ...", port)
 

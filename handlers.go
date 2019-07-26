@@ -105,3 +105,37 @@ func addNodeHandle(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	return
 }
+
+func addNewBlock(w http.ResponseWriter, r *http.Request) {
+
+	blockChain.consensus()
+
+	var messages []Message
+	newBlock := Block{
+		Transactions: messages,
+	}
+
+	decoder := json.NewDecoder(r.Body)
+	err := decoder.Decode(&newBlock)
+	if err != nil {
+		log.Error(err)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	index := len(blockChain.Chain)
+
+	newBlock.Index = int64(index)
+	newBlock.Transactions = queue.Messages
+
+	if !blockChain.validateBlock(newBlock) {
+		log.Error("Bloque inválido")
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	blockChain.Chain = append(blockChain.Chain, newBlock)
+
+	w.WriteHeader(http.StatusOK)
+	return
+}
