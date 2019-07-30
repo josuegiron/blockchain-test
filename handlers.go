@@ -31,7 +31,7 @@ func pushMessageHandle(w http.ResponseWriter, r *http.Request) {
 
 	queue.Messages = append(queue.Messages, message)
 
-	log.Println("Add new message '%v' to queue.", message.Content)
+	log.Printf("Add new message '%v' to queue.", message.Content)
 
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Server", "Success message")
@@ -39,13 +39,14 @@ func pushMessageHandle(w http.ResponseWriter, r *http.Request) {
 }
 
 func getChainHandle(w http.ResponseWriter, r *http.Request) {
-	log.Println("Return chain...")
 	response, err := json.Marshal(blockChain)
 	if err != nil {
+		log.Println("Error al devolver el blockchain")
 		log.Println(err)
 		return
 	}
 
+	log.Println("Return chain...")
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	w.Write(response)
@@ -54,7 +55,9 @@ func getChainHandle(w http.ResponseWriter, r *http.Request) {
 
 func mineBlockHandle(w http.ResponseWriter, r *http.Request) {
 
-	index := blockChain.mine(queue)
+	blockChain.consensus()
+
+	index := blockChain.mine(queue.Messages)
 	if index == 0 {
 		w.WriteHeader(http.StatusForbidden)
 		return
@@ -108,17 +111,15 @@ func addNodeHandle(w http.ResponseWriter, r *http.Request) {
 
 func addNewBlock(w http.ResponseWriter, r *http.Request) {
 
-	blockChain.consensus()
-
 	var messages []Message
 	newBlock := Block{
 		Transactions: messages,
 	}
 
-	decoder := json.NewDecoder(r.Body)
-	err := decoder.Decode(&newBlock)
+	err := json.NewDecoder(r.Body).Decode(&newBlock)
 	if err != nil {
 		log.Println(err)
+		log.Println("No se ha podido Decodificar el cuerpo del mensaje")
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -126,15 +127,15 @@ func addNewBlock(w http.ResponseWriter, r *http.Request) {
 	index := len(blockChain.Chain)
 
 	newBlock.Index = int64(index)
-	newBlock.Transactions = queue.Messages
 
 	if !blockChain.validateBlock(newBlock) {
-		log.Println("Bloque inválido")
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
 	blockChain.Chain = append(blockChain.Chain, newBlock)
+
+	blockChain.consensus()
 
 	w.WriteHeader(http.StatusOK)
 	return

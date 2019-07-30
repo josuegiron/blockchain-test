@@ -30,7 +30,7 @@ func main() {
 
 	port = ":9090"
 
-	log.Println("Server run in port %v ...", port)
+	log.Printf("Server run in port %v ...", port)
 
 	err := http.ListenAndServe(port, router)
 	if err != nil {

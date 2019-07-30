@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	osnet "net"
 	"os"
 )
@@ -50,11 +49,6 @@ func (net *Net) addMe() error {
 
 func newNet() Net {
 	newNet := Net{}
-	err := newNet.addMe()
-	if err != nil {
-		log.Println(err)
-		return Net{}
-	}
 	return newNet
 }
 

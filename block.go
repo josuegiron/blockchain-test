@@ -8,13 +8,13 @@ import (
 
 // Block doc ...
 type Block struct {
-	Index        int64       `json:"id"`
-	Previus      string      `json:"previus"`
-	Transactions interface{} `json:"transactions"`
-	Nonce        int         `json:"nonce"`
+	Index        int64     `json:"id"`
+	Previus      string    `json:"previus"`
+	Transactions []Message `json:"transactions"`
+	Nonce        int       `json:"nonce"`
 }
 
-func newBlock(index int64, previus string, transactions []interface{}, nonce int) Block {
+func newBlock(index int64, previus string, transactions []Message, nonce int) Block {
 	newBlock := Block{
 		Index:        index,
 		Previus:      previus,
